@@ -26,8 +26,9 @@ void dragon_recursive(sk_surface_t* canvas, sk_paint_t* paint, int iteration, in
     if (iteration < 1) {
         const sk_color_t colors[]
             = {0xFF0F9D58, 0xFFDB4437, 0xFF4285F4, 0xFFF4B400};
+        sk_rect_t rect = {0.0, 0.0, 1.0, 1.0};
         sk_paint_set_color(paint, colors[rand() % 4 ]);
-        sk_clip_rect(canvas, (sk_rect_t){0.0, 0.0, 1.0, 1.0});
+        sk_clip_rect(canvas, rect);
         sk_draw_paint(canvas, paint);
     } else {
         sk_scale(canvas, 0.707106781, 0.707106781);
@@ -41,8 +42,8 @@ void dragon_recursive(sk_surface_t* canvas, sk_paint_t* paint, int iteration, in
     sk_restore(canvas);
 }
 void dragon(sk_surface_t* canvas, sk_paint_t* paint, int width, int height) {
-    sk_save_matrix_and_clip(canvas, NULL);
     float W = ((width < height) ? width : height);
+    sk_save_matrix_and_clip(canvas, NULL);
     sk_translate(canvas, width * 0.4, height * 0.25);
     sk_scale(canvas, W, W);
     dragon_recursive(canvas, paint, 16, 0);
@@ -50,7 +51,7 @@ void dragon(sk_surface_t* canvas, sk_paint_t* paint, int width, int height) {
 }
 
 
-int main(int argc, char** argv) {
+int main() {
     int return_value = 1;
     sk_surface_t* sk_surface = NULL;
     sk_paint_t* sk_paint = NULL;
@@ -59,8 +60,9 @@ int main(int argc, char** argv) {
     FILE* out_file = NULL;
     const void* data = NULL;
     size_t size = 0;
+    sk_isize_t surface_size = {1024, 768};
 
-    sk_surface = sk_new_raster_surface((sk_isize_t){1024, 768});
+    sk_surface = sk_new_raster_surface(surface_size);
     if (!sk_surface) {
         goto done;
     }
@@ -69,7 +71,7 @@ int main(int argc, char** argv) {
     if (!sk_paint) {
         goto done;
     }
-    
+
     sk_paint_set_color(sk_paint, sk_color_from_argb(255, 255, 255, 255));
 
     sk_draw_paint(sk_surface, sk_paint);

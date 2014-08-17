@@ -47,7 +47,7 @@ typedef enum {
 typedef enum {
     sk_no_error = 0,
     sk_other_error = 1,
-    sk_null_pointer_error = 2,
+    sk_null_pointer_error = 2
 } sk_error_t;
 
 SK_API sk_error_t sk_surface_ref(sk_surface_t*);
@@ -129,8 +129,6 @@ SK_API sk_error_t sk_flush(sk_surface_t* sk_surface);
 
 SK_API sk_error_t sk_save_matrix_and_clip(sk_surface_t* sk_surface,
                                           int* saveCount);
-SK_API sk_error_t sk_save_matrix(sk_surface_t* sk_surface, int* saveCount);
-SK_API sk_error_t sk_save_clip(sk_surface_t* sk_surface, int* saveCount);
 SK_API sk_error_t sk_restore(sk_surface_t* sk_surface);
 SK_API sk_error_t sk_restore_to_count(sk_surface_t* sk_surface, int saveCount);
 
@@ -155,5 +153,3 @@ SK_API uint8_t sk_color_get_b(sk_color_t color);
 }
 #endif  /* __cplusplus */
 #endif  /* skia_DEFINED */
-
-
