@@ -25,9 +25,7 @@ typedef GrRenderTarget sk_render_target_t;
 
 struct sk_path_t; // TODO
 
-#ifndef SKIA_IMPLEMENTATION
 #define SKIA_IMPLEMENTATION 1
-#endif  // SKIA_IMPLEMENTATION
 #include "../include/skia.h"
 
 sk_error_t sk_surface_ref(sk_surface_t* sk_surface) {
@@ -52,7 +50,7 @@ sk_error_t sk_image_ref(sk_image_t* sk_image) {
     }
     sk_image->ref();
     return sk_no_error;
-    
+
 }
 
 sk_error_t  sk_image_unref(sk_image_t* sk_image) {
@@ -110,7 +108,7 @@ sk_surface_t* sk_new_raster_direct_surface(sk_isize_t size,
 }
 
 sk_surface_t* sk_new_picture_surface(sk_isize_t size) {
-    return SkSurface::NewPicture(size.width, size.height);
+    return NULL;  // not implemented yet.
 }
 
 sk_surface_t* sk_new_render_target_direct_surface(
@@ -190,7 +188,7 @@ sk_error_t sk_image_peek_pixels(const sk_image_t* sk_image,
     SkImageInfo info;
     size_t rowBytes;
     const void* pixels = sk_image->peekPixels(&info, &rowBytes);
-    if ((info.fColorType == kPMColor_SkColorType)
+    if ((info.fColorType == kN32_SkColorType)
         && (info.fAlphaType == kPremul_SkAlphaType)) {
         *sizeOut = (sk_isize_t){info.fWidth, info.fHeight};
         *pixelsOut = pixels;
@@ -273,32 +271,13 @@ sk_error_t sk_save_matrix_and_clip(sk_surface_t* sk_surface,
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    int count = sk_surface->getCanvas()->save(SkCanvas::kMatrixClip_SaveFlag);
+    int count = sk_surface->getCanvas()->save();
     if (saveCount) {
         *saveCount = count;
     }
     return sk_no_error;
 }
-sk_error_t sk_save_matrix(sk_surface_t* sk_surface, int* saveCount) {
-    if (!sk_surface) {
-        return sk_null_pointer_error;
-    }
-    int count = sk_surface->getCanvas()->save(SkCanvas::kMatrix_SaveFlag);
-    if (saveCount) {
-        *saveCount = count;
-    }
-    return sk_no_error;
-}
-sk_error_t sk_save_clip(sk_surface_t* sk_surface, int* saveCount) {
-    if (!sk_surface) {
-        return sk_null_pointer_error;
-    }
-    int count = sk_surface->getCanvas()->save(SkCanvas::kClip_SaveFlag);
-    if (saveCount) {
-        *saveCount = count;
-    }
-    return sk_no_error;
-}
+
 sk_error_t sk_restore(sk_surface_t* sk_surface) {
     if (!sk_surface) {
         return sk_null_pointer_error;
@@ -318,31 +297,24 @@ sk_error_t sk_translate(sk_surface_t* sk_surface, float dx, float dy) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    if (sk_surface->getCanvas()->translate(dx, dy)) {
-        return sk_no_error;
-    } else {
-        return sk_other_error;
-    }
+    sk_surface->getCanvas()->translate(dx, dy);
+    return sk_no_error;
 }
+
 sk_error_t sk_scale(sk_surface_t* sk_surface, float sx, float sy) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    if (sk_surface->getCanvas()->scale(sx, sy)) {
-        return sk_no_error;
-    } else {
-        return sk_other_error;
-    }
+    sk_surface->getCanvas()->scale(sx, sy);
+    return sk_no_error;
 }
+
 sk_error_t sk_rotate(sk_surface_t* sk_surface, float degrees) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    if (sk_surface->getCanvas()->rotate(degrees)) {
-        return sk_no_error;
-    } else {
-        return sk_other_error;
-    }
+    sk_surface->getCanvas()->rotate(degrees);
+    return sk_no_error;
 }
 
 static inline SkRect to_rect(sk_rect_t rect) {
@@ -388,6 +360,3 @@ uint8_t sk_color_get_g(sk_color_t color)  {
 uint8_t sk_color_get_b(sk_color_t color)  {
     return SkColorGetB(color);
 }
-
-
-
