@@ -79,8 +79,6 @@ SK_API sk_surface_t* sk_new_raster_direct_surface(sk_isize_t size,
                                                   sk_release_procedure_t proc,
                                                   void* context);
 
-SK_API sk_surface_t* sk_new_picture_surface(sk_isize_t size);
-
 SK_API sk_surface_t* sk_new_render_target_direct_surface(sk_render_target_t*);
 
 SK_API sk_image_t* sk_new_image_snapshot(sk_surface_t*);
@@ -127,10 +125,7 @@ SK_API sk_error_t sk_paint_set_color(sk_paint_t*, sk_color_t);
 
 SK_API sk_error_t sk_flush(sk_surface_t* sk_surface);
 
-SK_API sk_error_t sk_save_matrix_and_clip(sk_surface_t* sk_surface,
-                                          int* saveCount);
-SK_API sk_error_t sk_save_matrix(sk_surface_t* sk_surface, int* saveCount);
-SK_API sk_error_t sk_save_clip(sk_surface_t* sk_surface, int* saveCount);
+SK_API sk_error_t sk_save(sk_surface_t* sk_surface, int* saveCount);
 SK_API sk_error_t sk_restore(sk_surface_t* sk_surface);
 SK_API sk_error_t sk_restore_to_count(sk_surface_t* sk_surface, int saveCount);
 

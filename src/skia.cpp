@@ -109,10 +109,6 @@ sk_surface_t* sk_new_raster_direct_surface(sk_isize_t size,
     return NULL;  // not implemented yet.
 }
 
-sk_surface_t* sk_new_picture_surface(sk_isize_t size) {
-    return SkSurface::NewPicture(size.width, size.height);
-}
-
 sk_surface_t* sk_new_render_target_direct_surface(
     sk_render_target_t* sk_render_target) {
     return SkSurface::NewRenderTargetDirect(sk_render_target);
@@ -190,9 +186,9 @@ sk_error_t sk_image_peek_pixels(const sk_image_t* sk_image,
     SkImageInfo info;
     size_t rowBytes;
     const void* pixels = sk_image->peekPixels(&info, &rowBytes);
-    if ((info.fColorType == kPMColor_SkColorType)
-        && (info.fAlphaType == kPremul_SkAlphaType)) {
-        *sizeOut = (sk_isize_t){info.fWidth, info.fHeight};
+    if ((info.colorType() == kN32_SkColorType)
+        && (info.alphaType() == kPremul_SkAlphaType)) {
+        *sizeOut = (sk_isize_t){info.width(), info.height()};
         *pixelsOut = pixels;
         *colorTypeOut = sk_native32_color_type;
         *rowBytesOut = rowBytes;
@@ -268,32 +264,11 @@ sk_error_t sk_flush(sk_surface_t* sk_surface) {
     return sk_no_error;
 }
 
-sk_error_t sk_save_matrix_and_clip(sk_surface_t* sk_surface,
-                                   int* saveCount) {
+sk_error_t sk_save(sk_surface_t* sk_surface, int* saveCount) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    int count = sk_surface->getCanvas()->save(SkCanvas::kMatrixClip_SaveFlag);
-    if (saveCount) {
-        *saveCount = count;
-    }
-    return sk_no_error;
-}
-sk_error_t sk_save_matrix(sk_surface_t* sk_surface, int* saveCount) {
-    if (!sk_surface) {
-        return sk_null_pointer_error;
-    }
-    int count = sk_surface->getCanvas()->save(SkCanvas::kMatrix_SaveFlag);
-    if (saveCount) {
-        *saveCount = count;
-    }
-    return sk_no_error;
-}
-sk_error_t sk_save_clip(sk_surface_t* sk_surface, int* saveCount) {
-    if (!sk_surface) {
-        return sk_null_pointer_error;
-    }
-    int count = sk_surface->getCanvas()->save(SkCanvas::kClip_SaveFlag);
+    int count = sk_surface->getCanvas()->save();
     if (saveCount) {
         *saveCount = count;
     }
@@ -318,31 +293,22 @@ sk_error_t sk_translate(sk_surface_t* sk_surface, float dx, float dy) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    if (sk_surface->getCanvas()->translate(dx, dy)) {
-        return sk_no_error;
-    } else {
-        return sk_other_error;
-    }
+    sk_surface->getCanvas()->translate(dx, dy);
+    return sk_no_error;
 }
 sk_error_t sk_scale(sk_surface_t* sk_surface, float sx, float sy) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    if (sk_surface->getCanvas()->scale(sx, sy)) {
-        return sk_no_error;
-    } else {
-        return sk_other_error;
-    }
+    sk_surface->getCanvas()->scale(sx, sy);
+    return sk_no_error;
 }
 sk_error_t sk_rotate(sk_surface_t* sk_surface, float degrees) {
     if (!sk_surface) {
         return sk_null_pointer_error;
     }
-    if (sk_surface->getCanvas()->rotate(degrees)) {
-        return sk_no_error;
-    } else {
-        return sk_other_error;
-    }
+    sk_surface->getCanvas()->rotate(degrees);
+    return sk_no_error;
 }
 
 static inline SkRect to_rect(sk_rect_t rect) {
