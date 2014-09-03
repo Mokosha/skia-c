@@ -22,7 +22,7 @@
 #include "../include/skia.h"
 
 void dragon_recursive(sk_surface_t* canvas, sk_paint_t* paint, int iteration, int zig) {
-    sk_save_matrix_and_clip(canvas, NULL);
+    sk_save(canvas, NULL);
     if (iteration < 1) {
         const sk_color_t colors[]
             = {0xFF0F9D58, 0xFFDB4437, 0xFF4285F4, 0xFFF4B400};
@@ -41,14 +41,13 @@ void dragon_recursive(sk_surface_t* canvas, sk_paint_t* paint, int iteration, in
     sk_restore(canvas);
 }
 void dragon(sk_surface_t* canvas, sk_paint_t* paint, int width, int height) {
-    sk_save_matrix_and_clip(canvas, NULL);
+    sk_save(canvas, NULL);
     float W = ((width < height) ? width : height);
     sk_translate(canvas, width * 0.4, height * 0.25);
     sk_scale(canvas, W, W);
     dragon_recursive(canvas, paint, 16, 0);
     sk_restore(canvas);
 }
-
 
 int main(int argc, char** argv) {
     int return_value = 1;
@@ -62,11 +61,13 @@ int main(int argc, char** argv) {
 
     sk_surface = sk_new_raster_surface((sk_isize_t){1024, 768});
     if (!sk_surface) {
+        fprintf(stderr, "Unable to create surface!\n");
         goto done;
     }
 
     sk_paint = sk_new_paint();
     if (!sk_paint) {
+        fprintf(stderr, "Unable to create paint!\n");
         goto done;
     }
     
@@ -82,20 +83,25 @@ int main(int argc, char** argv) {
 
     sk_image = sk_new_image_snapshot(sk_surface);
     if (!sk_image) {
+        fprintf(stderr, "Unable to create image!\n");
         goto done;
     }
     sk_data = sk_new_encoded_png(sk_image);
     if (!sk_data) {
+        fprintf(stderr, "Unable to create png struct!\n");
         goto done;
     }
 
     sk_data_get_data(sk_data, &data, &size);
 
-    out_file = fopen("test_libskia_out.png", "w");
+    const char *outfilename = "test_libskia_out.png";
+    out_file = fopen(outfilename, "w");
     if (!out_file) {
+        fprintf(stderr, "Unable to create file: %s !\n", outfilename);
         goto done;
     }
     if (1 != fwrite(data, size, 1, out_file)) {
+        fprintf(stderr, "Unable to write to file: %s !\n", outfilename);
         goto done;
     }
     return_value = 0;
