@@ -24,3 +24,8 @@
 
 # Directories that we don't care about
 skia/**
+
+# Emacs things
+*~
+\.\#*\#
+*\#
