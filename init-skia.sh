@@ -27,6 +27,7 @@ if [ ! -d skia ]; then
     echo "Building Skia..."
     ./gyp_skia
     BUILDTYPE=Release GYP_DEFINES="skia_shared_lib=1" make
+    BUILDTYPE=Debug GYP_DEFINES="skia_shared_lib=1" make
 
     echo "Complete!"
 else
