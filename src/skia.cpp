@@ -12,6 +12,9 @@
 #include "SkColor.h"
 #include "SkPaint.h"
 
+#include "SkForceLinking.h"
+__SK_FORCE_IMAGE_DECODER_LINKING;
+
 class sk_paint_t : public SkRefCnt, public SkPaint {
 public:
     sk_paint_t() { }
@@ -28,7 +31,8 @@ struct sk_path_t; // TODO
 #ifndef SKIA_IMPLEMENTATION
 #define SKIA_IMPLEMENTATION 1
 #endif  // SKIA_IMPLEMENTATION
-#include "../include/skia.h"
+
+#include "skia.h"
 
 sk_error_t sk_surface_ref(sk_surface_t* sk_surface) {
     if (!sk_surface) {
