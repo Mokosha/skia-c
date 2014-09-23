@@ -29,3 +29,9 @@ skia/**
 *~
 \.\#*\#
 *\#
+
+# Gyp-CMake things
+Coverage/*
+Release/*
+Debug/*
+Release_Developer/*
